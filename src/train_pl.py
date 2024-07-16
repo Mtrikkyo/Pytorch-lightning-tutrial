@@ -45,6 +45,12 @@ parser.add_argument(
     default=64,
     help=""" """,
 )
+parser.add_argument(
+    "--ckpt_path",
+    type=str,
+    default=None,
+    help="""checkpoint path to resume training""",
+)
 
 args = parser.parse_args()
 
@@ -88,7 +94,12 @@ def main(args: Namespace):
             val_loader = DataLoader(val_set, batch_size=args.batch_size)
     # train
     trainer = L.Trainer(max_epochs=args.epoch)
-    trainer.fit(model, train_dataloaders=trian_loader, val_dataloaders=val_loader)
+    trainer.fit(
+        model,
+        train_dataloaders=trian_loader,
+        val_dataloaders=val_loader,
+        ckpt_path=args.ckpt_path,
+    )
 
     pass
 
