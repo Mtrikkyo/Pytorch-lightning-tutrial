@@ -72,7 +72,7 @@ class ToyModel(nn.Module):
 
         x += res
         x = self.gap(x)
-        x = x.view(-1)
+        x = torch.flatten(x, 1)
         x = self.classifar(x)
         x = nn.Softmax(-1)(x)
 
@@ -89,4 +89,4 @@ if __name__ == "__main__":
     model = ToyModel(in_channels=1)
     # dataset = MNIST("data", train=True, transform=v2.ToTensor())
     # dataloader = DataLoader(dataset, batch_size=32)
-    summary(model, (1, 28, 28))
+    summary(model, (32, 1, 28, 28))
