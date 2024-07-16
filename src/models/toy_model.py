@@ -28,7 +28,6 @@ class ToyModel(nn.Module):
             stride=1,
             padding=0,
             dilation=dilation,
-            
         )
 
         self.dw_conv = nn.Conv2d(
@@ -75,6 +74,7 @@ class ToyModel(nn.Module):
         x = self.gap(x)
         x = x.view(-1)
         x = self.classifar(x)
+        x = nn.Softmax(-1)(x)
 
         return x
 
