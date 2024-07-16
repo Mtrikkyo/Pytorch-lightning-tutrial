@@ -70,7 +70,7 @@ class ToyModel(nn.Module):
         res = self.residual_conv(res)
         res = nn.ReLU()(res)
 
-        x += res
+        x = x + res
         x = self.gap(x)
         x = torch.flatten(x, 1)
         x = self.classifar(x)
