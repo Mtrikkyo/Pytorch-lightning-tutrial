@@ -13,7 +13,7 @@ from argparse import ArgumentParser, Namespace
 import torch
 from torch.utils.data import Dataset, DataLoader
 import torchvision.transforms.v2 as v2
-from torchvision.datasets import MNIST, CIFAR10
+from torchvision.datasets import MNIST, CIFAR10, CIFAR100
 import lightning as L
 
 from models import LitToyModel
