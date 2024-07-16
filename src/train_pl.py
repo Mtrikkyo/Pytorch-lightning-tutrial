@@ -34,11 +34,11 @@ def main(args: Namespace):
 
     # dataloader
     trian_set = MNIST(DATA_DIR, True, transform=v2.ToTensor())
-    trian_loader = DataLoader(trian_set)
+    trian_loader = DataLoader(trian_set, batch_size=32)
 
     # train
     trainer = L.Trainer()
-    trainer.fit(toy_model, train_dataloaders=trian_loader)
+    trainer.fit(toy_model, train_dataloaders=trian_loader,)
 
     pass
 
