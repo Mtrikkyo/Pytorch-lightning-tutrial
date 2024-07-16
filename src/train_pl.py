@@ -12,10 +12,11 @@ from argparse import ArgumentParser, Namespace
 
 import torch
 from torch.utils.data import Dataset, DataLoader
+import torchvision.transforms.v2 as v2
 from torchvision.datasets import MNIST
 import lightning as L
 
-from models import LitToyModel
+from models import LitToyModel, toy_pl
 
 # args
 parser = ArgumentParser()
@@ -29,10 +30,10 @@ DATA_DIR = ROOT_DIR / "data"
 
 def main(args: Namespace):
     # lightning model instance
-    toy_model = LitToyModel()
+    toy_model = LitToyModel(in_channels=1)
 
     # dataloader
-    trian_set = MNIST(DATA_DIR, True)
+    trian_set = MNIST(DATA_DIR, True, transform=v2.ToTensor())
     trian_loader = DataLoader(trian_set)
 
     # train
