@@ -23,7 +23,7 @@ parser = ArgumentParser()
 parser.add_argument(
     "--dataset",
     type=str,
-    choices=["mnist", "cifar10", "cifar100"],
+    choices=["mnist", "cifar10", "cifar100", "wikitext103"],
     default="mnist",
     help=""" """,
 )
