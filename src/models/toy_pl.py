@@ -1,7 +1,7 @@
 #!.venv/bin/python3
 """train script with pytorch-lightning"""
 
-__version__ = "0.0"
+__version__ = "0.1"
 
 import os
 import sys
@@ -34,6 +34,8 @@ class LitToyModel(L.LightningModule):
     ) -> None:
         self.num_class = num_class
         super().__init__()
+        # save hyperprameters
+        self.save_hyperparameters()
 
         self.model = ToyModel(
             in_channels,
@@ -51,6 +53,12 @@ class LitToyModel(L.LightningModule):
         loss = F.cross_entropy(y_hat, y)
 
         return loss
+
+    def validation_step(self, batch, batch_idx):
+        x, y = batch
+        y_hat = self.model(x)
+        loss = F.cross_entropy(y_hat, y)
+        pass
 
     def configure_optimizers(self):
         # TODO timmのoptimizerに変更

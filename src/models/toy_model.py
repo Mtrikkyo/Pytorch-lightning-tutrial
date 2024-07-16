@@ -87,6 +87,4 @@ if __name__ == "__main__":
     from torchinfo import summary
 
     model = ToyModel(in_channels=1)
-    # dataset = MNIST("data", train=True, transform=v2.ToTensor())
-    # dataloader = DataLoader(dataset, batch_size=32)
     summary(model, (32, 1, 28, 28))
