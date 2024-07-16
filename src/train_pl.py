@@ -64,7 +64,7 @@ def main(args: Namespace):
             # lightning model instance
             model = LitToyModel(in_channels=3, num_class=10)
 
-            trian_set = CIFAR10()(DATA_DIR, True, transform=v2.ToTensor())
+            trian_set = CIFAR10(DATA_DIR, True, transform=v2.ToTensor())
             trian_loader = DataLoader(trian_set, batch_size=32)
 
         case "cifar100":
@@ -72,7 +72,7 @@ def main(args: Namespace):
             # lightning model instance
             model = LitToyModel(in_channels=3, num_class=100)
 
-            trian_set = CIFAR10()(DATA_DIR, True, transform=v2.ToTensor())
+            trian_set = CIFAR100(DATA_DIR, True, transform=v2.ToTensor())
             trian_loader = DataLoader(trian_set, batch_size=32)
 
     # train
