@@ -34,6 +34,8 @@ class LitToyModel(L.LightningModule):
     ) -> None:
         self.num_class = num_class
         super().__init__()
+        # save hyperprameters
+        self.save_hyperparameters()
 
         self.model = ToyModel(
             in_channels,
