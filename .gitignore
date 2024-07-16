@@ -1,3 +1,12 @@
 .venv/
-data/
+# datasets
+## MNIST
+data/MNIST/
+## WikiText103
+data/WikiText103/*.txt
+data/WikiText103/*.tokens
+## Reuters21578
+data/Reuters21578/*.txt
+data/Reuters21578/*.sgm
+data/Reuters21578/*.dtd
 lightning_logs/
