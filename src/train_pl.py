@@ -13,32 +13,74 @@ from argparse import ArgumentParser, Namespace
 import torch
 from torch.utils.data import Dataset, DataLoader
 import torchvision.transforms.v2 as v2
-from torchvision.datasets import MNIST
+from torchvision.datasets import MNIST, CIFAR10
 import lightning as L
 
-from models import LitToyModel, toy_pl
+from models import LitToyModel
 
 # args
 parser = ArgumentParser()
+parser.add_argument(
+    "--dataset",
+    type=str,
+    choices=["mnist", "cifar10", "cifar100"],
+    default="mnist",
+    help=""" """,
+)
+parser.add_argument(
+    "--data_dir",
+    type=str,
+    default="data",
+    help=""" """,
+)
+parser.add_argument(
+    "--epoch",
+    type=int,
+    default=300,
+    help=""" """,
+)
 
 args = parser.parse_args()
 
 # const
 ROOT_DIR = Path.cwd()
-DATA_DIR = ROOT_DIR / "data"
+DATA_DIR = ROOT_DIR / args.data_dir
 
 
 def main(args: Namespace):
-    # lightning model instance
-    toy_model = LitToyModel(in_channels=1)
 
     # dataloader
-    trian_set = MNIST(DATA_DIR, True, transform=v2.ToTensor())
-    trian_loader = DataLoader(trian_set, batch_size=32)
+    match args.dataset:
+        case "mnist":
+
+            # lightning model instance
+            model = LitToyModel(in_channels=1, num_class=10)
+
+            trian_set = MNIST(DATA_DIR, True, transform=v2.ToTensor())
+            trian_loader = DataLoader(trian_set, batch_size=32)
+
+        case "cifar10":
+
+            # lightning model instance
+            model = LitToyModel(in_channels=3, num_class=10)
+
+            trian_set = CIFAR10()(DATA_DIR, True, transform=v2.ToTensor())
+            trian_loader = DataLoader(trian_set, batch_size=32)
+
+        case "cifar100":
+
+            # lightning model instance
+            model = LitToyModel(in_channels=3, num_class=100)
+
+            trian_set = CIFAR10()(DATA_DIR, True, transform=v2.ToTensor())
+            trian_loader = DataLoader(trian_set, batch_size=32)
 
     # train
-    trainer = L.Trainer()
-    trainer.fit(toy_model, train_dataloaders=trian_loader,)
+    trainer = L.Trainer(max_epochs=args.epoch)
+    trainer.fit(
+        model,
+        train_dataloaders=trian_loader,
+    )
 
     pass
 
