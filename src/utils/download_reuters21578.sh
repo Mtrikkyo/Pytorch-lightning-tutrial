@@ -18,9 +18,6 @@ else;
     # extract
     tar -xzC "$SAVEDIR/$FILE" -f "$SAVEDIR/$FILE/$FILE.tar.gz"
     
-    # # rename file
-    # mv "$SAVEDIR/wikitext-103" "$SAVEDIR/$FILE"
-    
     # remove `tar`file
     rm "$SAVEDIR/$FILE/$FILE.tar.gz"
     
