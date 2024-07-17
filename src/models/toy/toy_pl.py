@@ -8,11 +8,13 @@ import sys
 from pathlib import Path
 from typing import *
 
+import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import timm
 from timm.utils.metrics import accuracy
 from timm.scheduler import CosineLRScheduler
+from timm.data import Mixup
 import lightning as L
 
 # const
@@ -45,8 +47,17 @@ class LitToyModel(L.LightningModule):
         cycle_limit: int = 1,
         cycle_decay: float = 0.5,
         cycle_mul: float = 1.0,
+        # mixup params
+        mixup_alpha: float = 0.8,
+        cutmix_alpha: float = 1.0,
+        cutmix_minmax: Optional[float] = None,
+        mixup_prob: float = 1.0,
+        switch_prob: float = 0.5,
+        mixup_mode=None,
+        label_smoothing: float = 0.1,
+        # loss
+        valid_loss_fn=nn.CrossEntropyLoss(),
     ) -> None:
-        self.num_class = num_class
         super().__init__()
         # save hyperprameters
         self.save_hyperparameters()
@@ -73,15 +84,35 @@ class LitToyModel(L.LightningModule):
             "cycle_decay": cycle_decay,
             "cycle_mul": cycle_mul,
         }
+        self.mixup_params = {
+            "mixup_alpha": mixup_alpha,
+            "cutmix_alpha": cutmix_alpha,
+            "cutmix_minmax": cutmix_minmax,
+            "prob": mixup_prob,
+            "switch_prob": switch_prob,
+            "mode": mixup_mode,
+            "label_smoothing": label_smoothing,
+            "num_classes": num_class,
+        }
+
+        self.mixup_fn = None
+        if (
+            self.mixup_params["mixup_alpha"] > 0
+            or self.mixup_params["cutmix_alpha"] > 0
+            or self.mixup_params["cutmix_minmax"] is not None
+        ):
+            self.mixup_fn = Mixup(**self.mixup_params)
+
+        self.valid_loss_fn = valid_loss_fn
 
     def training_step(self, batch, batch_idx):
         x, y = batch
+        if self.mixup_fn is not None:
+            x, y = self.mixup_fn(x, y)
         y_hat = self.model(x)
+        loss = self.valid_loss_fn(y_hat, y)
 
-        top1, top5 = accuracy(y_hat, y, topk=(1, 5))
-        loss = F.cross_entropy(y_hat, y)
-
-        self.log("train/top1", top1.item(), on_step=False, on_epoch=True)
+        # self.log("train/top1", top1.item(), on_step=False, on_epoch=True)
         self.log("train/loss", loss.item(), on_step=False, on_epoch=True)
 
         return loss
@@ -91,10 +122,10 @@ class LitToyModel(L.LightningModule):
         y_hat = self.model(x)
 
         top1, top5 = accuracy(y_hat, y, topk=(1, 5))
-        loss = F.cross_entropy(y_hat, y)
+        loss = self.valid_loss_fn(y_hat, y)
 
-        self.log("train/top1", top1.item(), on_step=False, on_epoch=True)
-        self.log("train/loss", loss.item(), on_step=False, on_epoch=True)
+        self.log("valid/top1", top1.item(), on_step=False, on_epoch=True)
+        self.log("valid/loss", loss.item(), on_step=False, on_epoch=True)
 
         return
 
