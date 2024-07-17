@@ -107,12 +107,15 @@ class LitToyModel(L.LightningModule):
 
     def training_step(self, batch, batch_idx):
         x, y = batch
+        y_copy = y
         if self.mixup_fn is not None:
             x, y = self.mixup_fn(x, y)
         y_hat = self.model(x)
+
+        top1, top5 = accuracy(y_hat, y_copy, topk=(1, 5))
         loss = self.valid_loss_fn(y_hat, y)
 
-        # self.log("train/top1", top1.item(), on_step=False, on_epoch=True)
+        self.log("train/top1", top1.item(), on_step=False, on_epoch=True)
         self.log("train/loss", loss.item(), on_step=False, on_epoch=True)
 
         return loss
