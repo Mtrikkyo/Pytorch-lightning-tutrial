@@ -84,6 +84,7 @@ class LitToyModel(L.LightningModule):
             "cycle_decay": cycle_decay,
             "cycle_mul": cycle_mul,
         }
+        # mixup
         self.mixup_params = {
             "mixup_alpha": mixup_alpha,
             "cutmix_alpha": cutmix_alpha,
@@ -102,7 +103,8 @@ class LitToyModel(L.LightningModule):
             or self.mixup_params["cutmix_minmax"] is not None
         ):
             self.mixup_fn = Mixup(**self.mixup_params)
-
+        
+        # loss
         self.valid_loss_fn = valid_loss_fn
 
     def training_step(self, batch, batch_idx):
