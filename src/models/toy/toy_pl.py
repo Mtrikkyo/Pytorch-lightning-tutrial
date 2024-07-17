@@ -19,7 +19,7 @@ ROOT_DIR = Path.cwd()
 CUSTOM_SCRIPT_DIR = ROOT_DIR / "src"
 
 sys.path.append(str(CUSTOM_SCRIPT_DIR))
-from models import ToyModel
+from models.toy import ToyModel
 
 
 class LitToyModel(L.LightningModule):
