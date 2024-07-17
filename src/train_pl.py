@@ -17,7 +17,7 @@ from torchvision.datasets import MNIST, CIFAR10, CIFAR100
 import lightning as L
 from lightning.pytorch.loggers import WandbLogger
 
-from models import LitToyModel
+from models.toy import LitToyModel
 
 # args
 parser = ArgumentParser()
