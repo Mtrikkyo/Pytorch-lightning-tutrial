@@ -58,7 +58,12 @@ parser.add_argument(
     default=None,
     help="""checkpoint path to resume training""",
 )
-parser.add_argument("--wandb_project", type=str, default="DDP-tutrial")
+parser.add_argument(
+    "--wandb_project",
+    type=str,
+    default="DDP-tutrial",
+    help="""project name on werights and biasis.""",
+)
 args = parser.parse_args()
 
 # const
