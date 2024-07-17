@@ -78,7 +78,7 @@ class LitToyModel(L.LightningModule):
         x, y = batch
         y_hat = self.model(x)
 
-        top1 = accuracy(y_hat, y)
+        top1, top5 = accuracy(y_hat, y, topk=(1, 5))
         loss = F.cross_entropy(y_hat, y)
 
         self.log("train/top1", top1.item())
@@ -90,7 +90,7 @@ class LitToyModel(L.LightningModule):
         x, y = batch
         y_hat = self.model(x)
 
-        top1 = accuracy(y_hat, y)
+        top1, top5 = accuracy(y_hat, y, topk=(1, 5))
         loss = F.cross_entropy(y_hat, y)
 
         self.log("train/top1", top1.item())
