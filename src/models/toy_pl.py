@@ -10,6 +10,8 @@ from typing import *
 
 import torch.nn.functional as F
 import torch.optim as optim
+import timm
+from timm.scheduler import CosineLRScheduler
 import lightning as L
 
 # const
@@ -24,6 +26,7 @@ class LitToyModel(L.LightningModule):
 
     def __init__(
         self,
+        # model params
         in_channels: int = 3,
         out_channels: int = 32,
         num_class: int = 10,
@@ -31,6 +34,16 @@ class LitToyModel(L.LightningModule):
         stride: int = 1,
         padding: int = 1,
         dilation: int = 1,
+        # optimizer params
+        lr: float = 1e-3,
+        # scheduler params
+        t_initial: int = 300,
+        lr_min: float = 1e-6,
+        warmup_t: int = 20,
+        warmup_lr_init: float = 1e-6,
+        cycle_limit: int = 1,
+        cycle_decay: float = 0.5,
+        cycle_mul: float = 1.0,
     ) -> None:
         self.num_class = num_class
         super().__init__()
@@ -47,6 +60,19 @@ class LitToyModel(L.LightningModule):
             dilation,
         )
 
+        self.optim_params = {
+            "lr": lr,
+        }
+        self.scheduler_params = {
+            "t_initial": t_initial,
+            "lr_min": lr_min,
+            "warmup_t": warmup_t,
+            "warmup_lr_init": warmup_lr_init,
+            "cycle_limit": cycle_limit,
+            "cycle_decay": cycle_decay,
+            "cycle_mul": cycle_mul,
+        }
+
     def training_step(self, batch, batch_idx):
         x, y = batch
         y_hat = self.model(x)
@@ -54,7 +80,7 @@ class LitToyModel(L.LightningModule):
 
         return loss
 
-    def validation_step(self, batch, batch_idx):
+    def validation_step(self, batch, batch_idx) -> None:
         x, y = batch
         y_hat = self.model(x)
         loss = F.cross_entropy(y_hat, y)
@@ -62,4 +88,10 @@ class LitToyModel(L.LightningModule):
 
     def configure_optimizers(self):
         # TODO timmのoptimizerに変更
-        optimizer = optim.AdamW(self.parameters(), lr=1e-3)
+        optimizer = optim.AdamW(self.parameters(), **self.optim_params)
+        scheduler = CosineLRScheduler(optimizer=optimizer, **self.scheduler_params)
+
+        return [optimizer], [{"scheduler": scheduler, "interval": "epoch"}]
+
+    def lr_scheduler_step(self, scheduler, metric) -> None:
+        scheduler.step(epoch=self.current_epoch)
