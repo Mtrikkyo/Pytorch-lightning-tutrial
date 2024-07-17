@@ -1,4 +1,4 @@
-#!.venv/bin/python3
+#!python3
 """train script with pytorch-lightning"""
 
 __version__ = "0.2"
