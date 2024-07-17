@@ -11,6 +11,7 @@ from typing import *
 import torch.nn.functional as F
 import torch.optim as optim
 import timm
+from timm.utils.metrics import accuracy
 from timm.scheduler import CosineLRScheduler
 import lightning as L
 
@@ -76,15 +77,26 @@ class LitToyModel(L.LightningModule):
     def training_step(self, batch, batch_idx):
         x, y = batch
         y_hat = self.model(x)
+
+        top1 = accuracy(y_hat, y)
         loss = F.cross_entropy(y_hat, y)
+
+        self.log("train/top1", top1)
+        self.log("train/loss", loss)
 
         return loss
 
     def validation_step(self, batch, batch_idx) -> None:
         x, y = batch
         y_hat = self.model(x)
+
+        top1 = accuracy(y_hat, y)
         loss = F.cross_entropy(y_hat, y)
-        pass
+
+        self.log("train/top1", top1)
+        self.log("train/loss", loss)
+
+        return
 
     def configure_optimizers(self):
         # TODO timmのoptimizerに変更
