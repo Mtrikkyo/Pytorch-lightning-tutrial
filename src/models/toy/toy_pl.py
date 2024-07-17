@@ -81,8 +81,8 @@ class LitToyModel(L.LightningModule):
         top1, top5 = accuracy(y_hat, y, topk=(1, 5))
         loss = F.cross_entropy(y_hat, y)
 
-        self.log("train/top1", top1.item())
-        self.log("train/loss", loss.item())
+        self.log("train/top1", top1.item(), on_step=False, on_epoch=True)
+        self.log("train/loss", loss.item(), on_step=False, on_epoch=True)
 
         return loss
 
@@ -93,8 +93,8 @@ class LitToyModel(L.LightningModule):
         top1, top5 = accuracy(y_hat, y, topk=(1, 5))
         loss = F.cross_entropy(y_hat, y)
 
-        self.log("train/top1", top1.item())
-        self.log("train/loss", loss.item())
+        self.log("train/top1", top1.item(), on_step=False, on_epoch=True)
+        self.log("train/loss", loss.item(), on_step=False, on_epoch=True)
 
         return
 
