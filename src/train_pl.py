@@ -15,6 +15,7 @@ from torch.utils.data import Dataset, DataLoader
 import torchvision.transforms.v2 as v2
 from torchvision.datasets import MNIST, CIFAR10, CIFAR100
 import lightning as L
+from lightning.pytorch.loggers import WandbLogger
 
 from models import LitToyModel
 
@@ -31,6 +32,12 @@ parser.add_argument(
     "--data_dir",
     type=str,
     default="data",
+    help=""" """,
+)
+parser.add_argument(
+    "--save_dir",
+    type=str,
+    default="result",
     help=""" """,
 )
 parser.add_argument(
@@ -51,7 +58,7 @@ parser.add_argument(
     default=None,
     help="""checkpoint path to resume training""",
 )
-
+parser.add_argument("--wandb_project", type=str, default="DDP-tutrial")
 args = parser.parse_args()
 
 # const
@@ -92,8 +99,16 @@ def main(args: Namespace):
             trian_loader = DataLoader(trian_set, batch_size=args.batch_size)
             val_set = CIFAR100(DATA_DIR, False, transform=v2.ToTensor(), download=True)
             val_loader = DataLoader(val_set, batch_size=args.batch_size)
+
+    # logger
+    wandb_logger = WandbLogger(
+        project=args.wandb_project,
+        save_dir=args.save_dir,
+        log_model=True,
+    )
+
     # train
-    trainer = L.Trainer(max_epochs=args.epoch)
+    trainer = L.Trainer(max_epochs=args.epoch, logger=wandb_logger)
     trainer.fit(
         model,
         train_dataloaders=trian_loader,
