@@ -14,10 +14,9 @@ import lightning as L
 # const
 ROOT_DIR = Path.cwd()
 CUSTOM_SCRIPT_DIR = ROOT_DIR / "src"
-print(CUSTOM_SCRIPT_DIR)
 
 sys.path.append(str(CUSTOM_SCRIPT_DIR))
-from models.transformer import Transformer
+from models.transformer import TransformerWithLMHead
 
 
 class LitTransformer(L.LightningDataModule):
