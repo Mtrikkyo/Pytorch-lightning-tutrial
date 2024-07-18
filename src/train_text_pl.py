@@ -9,6 +9,7 @@ import torch
 from torch.utils.data import DataLoader
 import lightning as L
 from lightning.pytorch.loggers import WandbLogger, CSVLogger
+from lightning.pytorch.callbacks import ModelSummary
 from transformers import AutoTokenizer
 
 
@@ -117,7 +118,7 @@ parser.add_argument(
 parser.add_argument(
     "--batch_size",
     type=int,
-    default=128,
+    default=5,
     help="""batch-size of data-loaders.""",
 )
 parser.add_argument(
