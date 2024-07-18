@@ -21,7 +21,7 @@ class WikiText103(Dataset):
         self.raw_data = Path(token_file).read_text().splitlines(True)
         self.tokenizer = tokenizer
 
-        self.dataset = torch.Tensor(
+        self.dataset = torch.tensor(
             [
                 tokenizer.convert_tokens_to_ids(
                     tokenizer.tokenize(
@@ -34,7 +34,8 @@ class WikiText103(Dataset):
                     )
                 )
                 for line in self.raw_data
-            ]
+            ],
+            dtype=torch.long,
         )
 
     def __len__(self) -> None:
