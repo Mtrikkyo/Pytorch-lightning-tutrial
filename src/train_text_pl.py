@@ -88,6 +88,11 @@ parser.add_argument(
     type=int,
     default=512,
 )
+parser.add_argument(
+    "--hidden_dim",
+    type=int,
+    default=512,
+)
 
 parser.add_argument(
     "--batch_size",
@@ -132,7 +137,7 @@ SAVE_DIR = Path(args.data_dir)
 
 
 def main(args: Namespace):
-    
+
     # tokenizer instance
     tokenizer = AutoTokenizer.from_pretrained(
         args.tokenizer,
@@ -140,7 +145,7 @@ def main(args: Namespace):
 
     # model instance
     if args.model == "gpt2":
-        model = LitTransformer(args)
+        model = LitTransformer(args, vocab_size=tokenizer.vocab_size)
         pass
 
     elif args.model == "hopfield":
