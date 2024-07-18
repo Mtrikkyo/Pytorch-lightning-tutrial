@@ -1,5 +1,6 @@
 #  #!/usr/bin/python3
 """transformer class"""
+from argparse import Namespace
 
 import torch
 import torch.nn as nn
@@ -69,25 +70,25 @@ class Transformer(nn.Module):
 
 
 class TransformerWithLMHead(nn.Module):
-    def __init__(self, config):
+    def __init__(self, args):
         super().__init__()
-        self.config = config
+        self.args = args
         self.transformer = Transformer(
-            config.embed_dim,
-            config.hidden_dim,
-            config.num_embeddings,
-            config.num_max_positions,
-            config.num_heads,
-            config.num_layers,
-            config.dropout,
+            args.embed_dim,
+            args.hidden_dim,
+            args.num_embeddings,
+            args.num_max_positions,
+            args.num_heads,
+            args.num_layers,
+            args.dropout,
         )
-        self.lm_head = nn.Linear(config.embed_dim, config.num_embeddings, bias=False)
+        self.lm_head = nn.Linear(args.embed_dim, args.num_embeddings, bias=False)
         self.lm_head.weight = self.transformer.tokens_embeddings.weight  # Tie weights
         self.apply(self.init_weights)
 
     def init_weights(self, module):
         if isinstance(module, (nn.Linear, nn.Embedding, nn.LayerNorm)):
-            module.weight.data.normal_(mean=0.0, std=self.config.initializer_range)
+            module.weight.data.normal_(mean=0.0, std=self.args.initializer_range)
         if isinstance(module, (nn.Linear, nn.LayerNorm)) and module.bias is not None:
             module.bias.data.zero_()
 
