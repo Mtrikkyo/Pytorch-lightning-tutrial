@@ -70,7 +70,7 @@ class Transformer(nn.Module):
 
 
 class TransformerWithLMHead(nn.Module):
-    def __init__(self, args):
+    def __init__(self, args: Namespace):
         super().__init__()
         self.args = args
         self.transformer = Transformer(
