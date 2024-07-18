@@ -132,6 +132,11 @@ SAVE_DIR = Path(args.data_dir)
 
 
 def main(args: Namespace):
+    
+    # tokenizer instance
+    tokenizer = AutoTokenizer.from_pretrained(
+        args.tokenizer,
+    )
 
     # model instance
     if args.model == "gpt2":
@@ -147,9 +152,7 @@ def main(args: Namespace):
 
     # dataset instance
     if args.dataset == "wikitext103":
-        tokenizer = AutoTokenizer.from_pretrained(
-            args.tokenizer,
-        )
+
         train_laoder = DataLoader(
             dataset=WikiText103(
                 DATA_DIR / "WikiText103/wiki.train.tokens",
