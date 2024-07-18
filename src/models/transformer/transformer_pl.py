@@ -42,15 +42,18 @@ class LitTransformer(L.LightningModule):
         }
 
         self.model = TransformerWithLMHead(args, vocab_size)
-        self.train_loss_fn = nn.CrossEntropyLoss()
+        self.train_loss_fn = nn.CrossEntropyLoss(ignore_index=-1)
 
     def training_step(self, batch, batch_idx):
         x = batch[:-1]
         y = batch[1:]
         y_hat = self.model(x)
 
-        loss = self.train_loss_fn(y_hat, y)
-        perplexity = torch.exp(loss.item())
+        loss = self.train_loss_fn(
+            y_hat.view(-1, y_hat.size(-1)),
+            y.view(-1),
+        )
+        perplexity = torch.exp(loss).item()
         self.log("train/loss", loss.item())
         self.log("train/perplexity", perplexity)
 
