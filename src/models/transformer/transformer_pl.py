@@ -24,7 +24,7 @@ class LitTransformer(L.LightningDataModule):
     def __init__(self) -> None:
         super().__init__()
 
-        self.model
+        self.model = TransformerWithLMHead()
 
     def training_step(self, batch, batch_idx):
         x = batch
