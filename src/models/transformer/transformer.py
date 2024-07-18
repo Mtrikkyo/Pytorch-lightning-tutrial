@@ -108,6 +108,6 @@ class TransformerWithLMHead(nn.Module):
     #     return logits
     def forward(self, x):
         x = self.transformer(x)
-        x = self.lm_head
+        x = self.lm_head(x)
 
         return x
