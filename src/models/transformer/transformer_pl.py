@@ -23,7 +23,7 @@ sys.path.append(str(CUSTOM_SCRIPT_DIR))
 from models.transformer import TransformerWithLMHead
 
 
-class LitTransformer(L.LightningDataModule):
+class LitTransformer(L.LightningModule):
 
     def __init__(self, args: Namespace, vocab_size: int) -> None:
         super().__init__()
@@ -68,7 +68,7 @@ class LitTransformer(L.LightningDataModule):
 
         return
 
-    def configure_optimizer(self):
+    def configure_optimizers(self):
         optimizer = optim.AdamW(self.parameters, **self.optim_params)
         scheduler = CosineLRScheduler(optimizer, self.scheduler_params)
         return [optimizer], [{"scheduler": scheduler, "interval": "epoch"}]
