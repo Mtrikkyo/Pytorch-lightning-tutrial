@@ -67,13 +67,20 @@ class Transformer(nn.Module):
             h = x + h
         return h
 
+
 class TransformerWithLMHead(nn.Module):
     def __init__(self, config):
         super().__init__()
         self.config = config
-        self.transformer = Transformer(config.embed_dim, config.hidden_dim, config.num_embeddings,
-                                       config.num_max_positions, config.num_heads, config.num_layers,
-                                       config.dropout)
+        self.transformer = Transformer(
+            config.embed_dim,
+            config.hidden_dim,
+            config.num_embeddings,
+            config.num_max_positions,
+            config.num_heads,
+            config.num_layers,
+            config.dropout,
+        )
         self.lm_head = nn.Linear(config.embed_dim, config.num_embeddings, bias=False)
         self.lm_head.weight = self.transformer.tokens_embeddings.weight  # Tie weights
         self.apply(self.init_weights)
@@ -92,7 +99,9 @@ class TransformerWithLMHead(nn.Module):
             shift_logits = logits[:-1]
             shift_labels = labels[1:]
             loss_fct = nn.CrossEntropyLoss(ignore_index=-1)
-            loss = loss_fct(shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1))
+            loss = loss_fct(
+                shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1)
+            )
             return logits, loss
 
         return logits
