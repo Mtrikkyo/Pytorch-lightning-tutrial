@@ -75,14 +75,14 @@ class TransformerWithLMHead(nn.Module):
         self.args = args
         self.transformer = Transformer(
             num_embeddings=vocab_size,
-            embed_dim=args.embed_dim,
-            hidden_dim=args.hidden_dim,
-            # args.num_max_positions,
-            num_heads=args.num_heads,
-            num_layers=args.num_layers,
-            dropout=args.dropout,
+            embed_dim=self.args.embed_dim,
+            hidden_dim=self.args.hidden_dim,
+            # self.args.num_max_positions,
+            num_heads=self.args.num_heads,
+            num_layers=self.args.num_layers,
+            dropout=self.args.dropout,
         )
-        self.lm_head = nn.Linear(args.embed_dim, args.num_embeddings, bias=False)
+        self.lm_head = nn.Linear(self.args.embed_dim, vocab_size, bias=False)
         self.lm_head.weight = self.transformer.tokens_embeddings.weight  # Tie weights
         self.apply(self.init_weights)
 
