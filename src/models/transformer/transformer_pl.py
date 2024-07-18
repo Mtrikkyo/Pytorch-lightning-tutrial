@@ -25,7 +25,7 @@ from models.transformer import TransformerWithLMHead
 
 class LitTransformer(L.LightningDataModule):
 
-    def __init__(self, args: Namespace) -> None:
+    def __init__(self, args: Namespace, vocab_size: int) -> None:
         super().__init__()
 
         self.optim_params = {
@@ -41,7 +41,7 @@ class LitTransformer(L.LightningDataModule):
             "cycle_mul": args.cycle_mul,
         }
 
-        self.model = TransformerWithLMHead(args)
+        self.model = TransformerWithLMHead(args, vocab_size)
         self.train_loss_fn = nn.CrossEntropyLoss()
 
     def training_step(self, batch, batch_idx):
