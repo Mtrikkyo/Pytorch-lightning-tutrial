@@ -47,7 +47,7 @@ if __name__ == "__main__":
     from pathlib import Path
     from tqdm import tqdm
 
-    ROOT_DIR = Path.cwd().parents[2]
+    ROOT_DIR = Path.cwd()
     DATA_DIR = ROOT_DIR / "data/WikiText103"
 
     tokenizer = AutoTokenizer.from_pretrained(
