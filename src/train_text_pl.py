@@ -178,13 +178,13 @@ def main(args: Namespace):
     # dataset instance
     if args.dataset == "wikitext103":
 
-        train_loader = DataLoader(
-            dataset=WikiText103(
-                DATA_DIR / "WikiText103/wiki.train.tokens",
-                tokenizer=tokenizer,
-            ),
-            batch_size=args.batch_size,
-        )
+        # train_loader = DataLoader(
+        #     dataset=WikiText103(
+        #         DATA_DIR / "WikiText103/wiki.train.tokens",
+        #         tokenizer=tokenizer,
+        #     ),
+        #     batch_size=args.batch_size,
+        # )
         val_loader = DataLoader(
             dataset=WikiText103(
                 DATA_DIR / "WikiText103/wiki.valid.tokens",
