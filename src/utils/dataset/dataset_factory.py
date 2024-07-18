@@ -1,4 +1,4 @@
-# #!/usr/bin/python3
+#!.venv/bin/python3
 """dataset class for WikiText103"""
 
 # import
@@ -27,6 +27,7 @@ class WikiText103(Dataset):
                     line.strip(" ").replace("\n", "[SEP]").replace("<unk>", "[UNK]"),
                     max_length=512,
                     truncation=True,
+                    padding="max_length",
                 )
             )
             for line in self.raw_data
@@ -49,7 +50,9 @@ if __name__ == "__main__":
     ROOT_DIR = Path.cwd().parents[2]
     DATA_DIR = ROOT_DIR / "data/WikiText103"
 
-    tokenizer = AutoTokenizer.from_pretrained(pretrained_model_name_or_path="bert-base-cased", force_download=True)
+    tokenizer = AutoTokenizer.from_pretrained(
+        pretrained_model_name_or_path="bert-base-cased", force_download=True
+    )
     train_set = WikiText103(DATA_DIR / "wiki.valid.tokens", tokenizer)
     print(train_set[:10])
 
