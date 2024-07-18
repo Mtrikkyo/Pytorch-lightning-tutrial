@@ -21,6 +21,7 @@ parser.add_argument(
     "--model",
     type=str,
     choices=["gpt2", "hopfield"],
+    default="gpt2",
     help="""""",
 )
 parser.add_argument(
@@ -35,6 +36,59 @@ parser.add_argument(
     default="bert-base-cased",
     help="""pretrained model name or path to get tonizer from`transformers` library. """,
 )
+parser.add_argument(
+    "--epoch",
+    type=int,
+    default=10,
+)
+parser.add_argument_group("Scheduler params")
+parser.add_argument(
+    "--lr",
+    type=int,
+    default=6.25e-5,
+)
+parser.add_argument(
+    "--t_initial",
+    type=int,
+    default=10,
+)
+parser.add_argument(
+    "--lr_min",
+    type=float,
+    default=1e-6,
+)
+parser.add_argument(
+    "--warmup_t",
+    type=int,
+    default=20,
+)
+parser.add_argument(
+    "--warmup_lr_init",
+    type=float,
+    default=1e-6,
+)
+parser.add_argument(
+    "--cycle_limit",
+    type=int,
+    default=1,
+)
+parser.add_argument(
+    "--cycle_decay",
+    type=float,
+    default=0.5,
+)
+parser.add_argument(
+    "--cycle_mul",
+    type=float,
+    default=1.0,
+)
+parser.add_argument_group("Model Parameters")
+parser.add_argument(
+    "--embed_dim",
+    type=int,
+    default=512,
+)
+
 parser.add_argument(
     "--batch_size",
     type=int,
@@ -81,12 +135,13 @@ def main(args: Namespace):
 
     # model instance
     if args.model == "gpt2":
-        model = LitTransformer()
+        model = LitTransformer(args)
         pass
 
     elif args.model == "hopfield":
         pass
     else:
+        print("unko")
         # error
         pass
 
@@ -137,4 +192,5 @@ def main(args: Namespace):
 
 
 if __name__ == "__main__":
+    main(args)
     pass
