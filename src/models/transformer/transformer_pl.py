@@ -69,8 +69,8 @@ class LitTransformer(L.LightningModule):
         return
 
     def configure_optimizers(self):
-        optimizer = optim.AdamW(self.parameters, **self.optim_params)
-        scheduler = CosineLRScheduler(optimizer, self.scheduler_params)
+        optimizer = optim.AdamW(self.parameters(), **self.optim_params)
+        scheduler = CosineLRScheduler(optimizer, **self.scheduler_params)
         return [optimizer], [{"scheduler": scheduler, "interval": "epoch"}]
 
     def lr_scheduler_step(self, scheduler, metric) -> None:
