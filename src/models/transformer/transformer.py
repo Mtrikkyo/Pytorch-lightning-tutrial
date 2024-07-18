@@ -91,17 +91,22 @@ class TransformerWithLMHead(nn.Module):
         if isinstance(module, (nn.Linear, nn.LayerNorm)) and module.bias is not None:
             module.bias.data.zero_()
 
-    def forward(self, x, labels=None):
-        hidden_states = self.transformer(x)
-        logits = self.lm_head(hidden_states)
+    # def forward(self, x, labels=None):
+    #     hidden_states = self.transformer(x)
+    #     logits = self.lm_head(hidden_states)
 
-        if labels is not None:
-            shift_logits = logits[:-1]
-            shift_labels = labels[1:]
-            loss_fct = nn.CrossEntropyLoss(ignore_index=-1)
-            loss = loss_fct(
-                shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1)
-            )
-            return logits, loss
+    #     if labels is not None:
+    #         shift_logits = logits[:-1]
+    #         shift_labels = labels[1:]
+    #         loss_fct = nn.CrossEntropyLoss(ignore_index=-1)
+    #         loss = loss_fct(
+    #             shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1)
+    #         )
+    #         return logits, loss
 
-        return logits
+    #     return logits
+    def forward(self, x):
+        x = self.transformer(x)
+        x = self.lm_head
+
+        return x
