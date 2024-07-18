@@ -74,9 +74,9 @@ class TransformerWithLMHead(nn.Module):
         super().__init__()
         self.args = args
         self.transformer = Transformer(
+            args.num_embeddings,
             args.embed_dim,
             args.hidden_dim,
-            args.num_embeddings,
             args.num_max_positions,
             args.num_heads,
             args.num_layers,
