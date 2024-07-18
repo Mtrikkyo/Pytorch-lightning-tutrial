@@ -74,13 +74,13 @@ class TransformerWithLMHead(nn.Module):
         super().__init__()
         self.args = args
         self.transformer = Transformer(
-            vocab_size,
-            args.embed_dim,
-            args.hidden_dim,
-            args.num_max_positions,
-            args.num_heads,
-            args.num_layers,
-            args.dropout,
+            num_embeddings=vocab_size,
+            embed_dim=args.embed_dim,
+            hidden_dim=args.hidden_dim,
+            # args.num_max_positions,
+            num_heads=args.num_heads,
+            num_layers=args.num_layers,
+            dropout=args.dropout,
         )
         self.lm_head = nn.Linear(args.embed_dim, args.num_embeddings, bias=False)
         self.lm_head.weight = self.transformer.tokens_embeddings.weight  # Tie weights
