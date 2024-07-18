@@ -25,7 +25,12 @@ class LitTransformer(L.LightningDataModule):
         super().__init__()
 
         self.model = TransformerWithLMHead()
+        self.loss_fn = nn.CrossEntropyLoss()
 
     def training_step(self, batch, batch_idx):
         x = batch
+        y = batch
+        y_hat = self.model(x[:-1])
+        # loss=
+
         pass
