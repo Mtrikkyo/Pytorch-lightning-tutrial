@@ -74,7 +74,6 @@ class ToyModel(nn.Module):
         x = self.gap(x)
         x = torch.flatten(x, 1)
         x = self.classifar(x)
-        x = nn.Softmax(-1)(x)
 
         return x
 
