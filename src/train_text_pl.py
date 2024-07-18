@@ -28,6 +28,7 @@ parser.add_argument(
     "--dataset",
     type=str,
     choices=["wikitext103"],
+    default="wikitext103",
     help="""""",
 )
 parser.add_argument(
@@ -93,7 +94,26 @@ parser.add_argument(
     type=int,
     default=512,
 )
-
+parser.add_argument(
+    "--num_heads",
+    type=int,
+    default=8,
+)
+parser.add_argument(
+    "--num_layers",
+    type=int,
+    default=8,
+)
+parser.add_argument(
+    "--dropout",
+    type=float,
+    default=0.0,
+)
+parser.add_argument(
+    "--initializer_range",
+    type=float,
+    default=0.0,
+)
 parser.add_argument(
     "--batch_size",
     type=int,
@@ -158,14 +178,14 @@ def main(args: Namespace):
     # dataset instance
     if args.dataset == "wikitext103":
 
-        train_laoder = DataLoader(
+        train_loader = DataLoader(
             dataset=WikiText103(
                 DATA_DIR / "WikiText103/wiki.train.tokens",
                 tokenizer=tokenizer,
             ),
             batch_size=args.batch_size,
         )
-        val_laoder = DataLoader(
+        val_loader = DataLoader(
             dataset=WikiText103(
                 DATA_DIR / "WikiText103/wiki.valid.tokens",
                 tokenizer=tokenizer,
@@ -193,8 +213,8 @@ def main(args: Namespace):
     )
     trainer.fit(
         model=model,
-        train_dataloaders=train_laoder,
-        val_dataloaders=val_laoder,
+        train_dataloaders=val_loader,
+        # val_dataloaders=val_loader,
         ckpt_path=args.ckpt_path,
     )
 
