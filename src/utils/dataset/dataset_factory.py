@@ -21,16 +21,20 @@ class WikiText103(Dataset):
         self.raw_data = Path(token_file).read_text().splitlines(True)
         self.tokenizer = tokenizer
 
-        self.dataset = list(
-            tokenizer.convert_tokens_to_ids(
-                tokenizer.tokenize(
-                    line.strip(" ").replace("\n", "[SEP]").replace("<unk>", "[UNK]"),
-                    max_length=512,
-                    truncation=True,
-                    padding="max_length",
+        self.dataset = torch.Tensor(
+            [
+                tokenizer.convert_tokens_to_ids(
+                    tokenizer.tokenize(
+                        line.strip(" ")
+                        .replace("\n", "[SEP]")
+                        .replace("<unk>", "[UNK]"),
+                        max_length=512,
+                        truncation=True,
+                        padding="max_length",
+                    )
                 )
-            )
-            for line in self.raw_data
+                for line in self.raw_data
+            ]
         )
 
     def __len__(self) -> None:
@@ -54,6 +58,6 @@ if __name__ == "__main__":
         pretrained_model_name_or_path="bert-base-cased", force_download=True
     )
     train_set = WikiText103(DATA_DIR / "wiki.valid.tokens", tokenizer)
-    print(train_set[:10])
+    print(type(train_set[0]))
 
     pass
