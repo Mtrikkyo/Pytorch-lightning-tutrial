@@ -2,6 +2,7 @@
 """train-script(Transformer) with pytorch-lightning."""
 
 # import
+import os
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
 
@@ -15,6 +16,9 @@ from transformers import AutoTokenizer
 
 from models.transformer import LitTransformer
 from utils.dataset.dataset_factory import WikiText103
+
+# env
+os.environ["TOKENIZERS_PARALLELISM"] = "true"
 
 # args
 parser = ArgumentParser()
