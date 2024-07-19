@@ -92,7 +92,7 @@ parser.add_argument_group("Model Parameters")
 parser.add_argument(
     "--embed_dim",
     type=int,
-    default=512,
+    default=256,
 )
 parser.add_argument(
     "--hidden_dim",
@@ -117,7 +117,7 @@ parser.add_argument(
 parser.add_argument(
     "--initializer_range",
     type=float,
-    default=0.0,
+    default=0.02,
 )
 parser.add_argument(
     "--batch_size",
