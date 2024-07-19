@@ -44,7 +44,8 @@ class WikiText103(Dataset):
     def __getitem__(self, index):
         return self.dataset[index]
 
-    pass
+    def line_split_data(self):
+        pass
 
 
 if __name__ == "__main__":
@@ -56,9 +57,9 @@ if __name__ == "__main__":
     DATA_DIR = ROOT_DIR / "data/WikiText103"
 
     tokenizer = AutoTokenizer.from_pretrained(
-        pretrained_model_name_or_path="bert-base-cased", force_download=True
+        pretrained_model_name_or_path="bert-base-cased", force_download=False
     )
     train_set = WikiText103(DATA_DIR / "wiki.valid.tokens", tokenizer)
-    print(type(train_set[0]))
+    print(train_set[0].shape)
 
     pass
