@@ -32,7 +32,9 @@ class Transformer(nn.Module):
         self.layer_norms_1, self.layer_norms_2 = nn.ModuleList(), nn.ModuleList()
         for _ in range(num_layers):
             self.attentions.append(
-                nn.MultiheadAttention(embed_dim, num_heads, dropout=dropout)
+                nn.MultiheadAttention(
+                    embed_dim, num_heads, dropout=dropout, batch_first=True
+                )
             )
             self.feed_forwards.append(
                 nn.Sequential(
@@ -45,19 +47,30 @@ class Transformer(nn.Module):
             self.layer_norms_2.append(nn.LayerNorm(embed_dim, eps=1e-12))
 
     def forward(self, x):
-        positions = torch.arange(len(x), device=x.device).unsqueeze(-1)
+        _, seq_length = x.shape
+
+        # token_embedding
         h = self.tokens_embeddings(x)
-        h = h + self.position_embeddings(positions).expand_as(h)
+
+        # position_embedding
+        positions = torch.arange(seq_length, device=x.device)
+        pos = self.position_embeddings(positions).expand_as(h)
+        # print(pos.shape)
+        h = h + pos
+
         h = self.dropout(h)
 
-        attn_mask = torch.full(
-            (len(x), len(x)), -float("Inf"), device=h.device, dtype=h.dtype
-        )
+        # attn_mask
+        attn_mask = torch.full((seq_length, seq_length), float("-inf"), device=h.device)
         attn_mask = torch.triu(attn_mask, diagonal=1)
+        if str(h.device).startswith("mps"):
+            attn_mask = torch.nan_to_num(attn_mask, nan=0.0)
+
         for layer_norm_1, attention, layer_norm_2, feed_forward in zip(
             self.layer_norms_1, self.attentions, self.layer_norms_2, self.feed_forwards
         ):
             h = layer_norm_1(h)
+
             x, _ = attention(h, h, h, attn_mask=attn_mask, need_weights=False)
             x = self.dropout(x)
             h = x + h
@@ -77,7 +90,6 @@ class TransformerWithLMHead(nn.Module):
             num_embeddings=vocab_size,
             embed_dim=self.args.embed_dim,
             hidden_dim=self.args.hidden_dim,
-            # self.args.num_max_positions,
             num_heads=self.args.num_heads,
             num_layers=self.args.num_layers,
             dropout=self.args.dropout,
@@ -92,20 +104,6 @@ class TransformerWithLMHead(nn.Module):
         if isinstance(module, (nn.Linear, nn.LayerNorm)) and module.bias is not None:
             module.bias.data.zero_()
 
-    # def forward(self, x, labels=None):
-    #     hidden_states = self.transformer(x)
-    #     logits = self.lm_head(hidden_states)
-
-    #     if labels is not None:
-    #         shift_logits = logits[:-1]
-    #         shift_labels = labels[1:]
-    #         loss_fct = nn.CrossEntropyLoss(ignore_index=-1)
-    #         loss = loss_fct(
-    #             shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1)
-    #         )
-    #         return logits, loss
-
-    #     return logits
     def forward(self, x):
         x = self.transformer(x)
         x = self.lm_head(x)
